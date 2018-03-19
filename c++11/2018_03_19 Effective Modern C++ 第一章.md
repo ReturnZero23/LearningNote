@@ -31,7 +31,7 @@ int x = 0;
 
 f(x);
 ```
-在这里，ParamType 是 const int &，T 是 int。
+在这里，ParamType 是 const int &，T 是int。
 参数 T 的类型的推导，不仅仅依赖于表达式 expr 的类型，也依赖于 ParamType 的类型。
 
 类型推导的情形主要分三种情况：
@@ -45,7 +45,7 @@ void f(ParamType param);
 2.ParamType 是通用的引用类型
 3.ParamType 既不是指针类型，又不是引用类型
 
-(注：表格里列为ParamType 的类型，行为expr的参数的类型，表格中的内容为推导出来的param的类型(T的类型))
+(注：表格里列为ParamType 的类型，行为expr的参数的类型，表格中的内容为推导出来的param的类型(T的类型))
 
 | expr的类型    |  int           |  const int             | const int&             | const int*     | 27         |
 | :----------: | :------------: | :--------------------: | :--------------------: | :-------------:| :--------: |
@@ -55,18 +55,18 @@ void f(ParamType param);
 | T&&          | int&(int&)     | const int&(const int&) | const int&(const int&) |                | int&&(int) |
 | T            | int(int)       | int(int)               | int(int)               |
 
-当 ParamType 的类型为 T& 时忽略传入参数的引用。
+当 ParamType 的类型为 T& 时忽略传入参数的引用。
 
-当 ParamType 的类型为 const T& 时忽略传入参数的const 限定符和引用。
+当 ParamType 的类型为 const T& 时忽略传入参数的const 限定符和引用。
 
 
-当 ParamType 的类型为 T&& 通用引用时，当传入参数为左值时，T 和 param 都被推导为左值引用（保留限定符），当为右值时，和前两种情况类似，T忽略&&的右值引用。
+当 ParamType 的类型为 T&& 通用引用时，当传入参数为左值时，T 和 param 都被推导为左值引用（保留限定符），当为右值时，和前两种情况类似，T忽略&&的右值引用。
 
-当 ParamType 的类型为 T 时，忽略传入 expr 的所有限定符和引用，表示函数 f 的参数是进行拷贝的，param 是一个全新的对象，传入的 expr 的限定符对其不起作用。
+当 ParamType 的类型为 T 时，忽略传入 expr 的所有限定符和引用，表示函数 f 的参数是进行拷贝的，param 是一个全新的对象，传入的 expr 的限定符对其不起作用。
 
 ### 四.当函数的模板参数是函数名或者是数组名的时候
 
-注：数组的名通常被认为数组元素类型的指针，因为通常两者在使用中可以互换，但是两者的类型实际上是不一样的。
+注：数组的名通常被认为数组元素类型的指针，因为通常两者在使用中可以互换，但是两者的类型实际上是不一样的。
 
 ```cpp
 const char name[] = "J. P. Briggs";  // name's type is
@@ -75,11 +75,11 @@ const char * ptrToName = name;       // array decays to pointer
 ```
 
 数组名：
-当 ParamType 的类型为 T 时，参数的类型会退化为指针类型 (const char *),不会保留数组的长度信息
-当 ParamType 的类型为 T& 时，参数的类型会变成数组的引用类型（const char (&) [13])，会保留数组的长度信息
+当 ParamType 的类型为 T 时，参数的类型会退化为指针类型 (const char *),不会保留数组的长度信息
+当 ParamType 的类型为 T& 时，参数的类型会变成数组的引用类型（const char (&) [13])，会保留数组的长度信息
 
 函数名：
-当 ParamType 的类型为 T 时，参数的类型会退化为函数的指针，
+当 ParamType 的类型为 T 时，参数的类型会退化为函数的指针，
 当 ParamType 的类型为 T& 时，参数的类型会退化为函数的引用，
 ```cpp
 void someFunc(int, double);     // someFunc is a function;
@@ -96,7 +96,7 @@ f2(someFunc);                   // param deduced as ref-to-func;
                                 // type is void (&)(int, double)
 ```
 
-### 五.auto 类型推导和模板类型推导的一些差异
+### 五.auto 类型推导和模板类型推导的一些差异
 
 1.auto 能够推导 std::initializer 类型，但是模板推导不行.
 2.auto 在函数的返回值类型和匿名函数的参数中，无法推导 std::initializer 类型。
@@ -104,7 +104,7 @@ f2(someFunc);                   // param deduced as ref-to-func;
 
 ### 六.decltype 
 
-1.Decltype 在c++11 中常用来表示是模板函数中返回值得类型依赖于传入参数的类型，
+1.Decltype 在c++11 中常用来表示是模板函数中返回值得类型依赖于传入参数的类型，
 2.Decltype(auto) 在函数模板的推导中表示函数的返回值的类型和返回表达式的类型严格一致，
 3.Decltype(auto) 也可以用在其他地方，用来表示定义的类型和要推导的表达式的类型严格一致。
 
@@ -132,4 +132,4 @@ TD<decltype(x)> xType;
 ```
 这种方式会打印出x推导出来的类型
 
-注：书中说使用某些方式得到的类型不一定准确，所以理解c++的类型推导的规则还是十分重要的。
+注：书中说使用某些方式得到的类型不一定准确，所以理解c++的类型推导的规则还是十分重要的。
