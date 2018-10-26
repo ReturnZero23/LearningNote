@@ -2,7 +2,7 @@
 
 ## 一、区别圆括号和花括号在创建对象的时候
 
-### 1.对象初始化的时候不使用 “=” 赋值操作符
+- 对象初始化的时候不使用 “=” 赋值操作符
 
 ```cpp
 int x = { 0 };
@@ -23,7 +23,7 @@ w1 = w2;         // an assignment; calls copy operator=
 
 - 初始化一个无参数的对象，要使用花括号，而不能使用圆括号，圆括号的方式会和定义一个成员函数的形式冲突，只能使用花括号的形式。
 
-- 花括号的初始化会导致一下令人困惑的行为：因为新的c++标准中添加了std::initializer, 当初始化的时候新的标准里会优先解析成初始化列表，而不是对应的参数，当一个类的构造函数中包含初始化列表，你使用花括号的初始化时，会优先使用初始化列表的构造函数，即使构造参数中有类型完全符合的构造函数，初始化列表页会根据参数的类型先进行隐式转换，转换成初始化列表中的类型（即使初始化列表中的类型并不是一致的），如果构造的花括号中的类型完全没有办法和初始化列表中的类型进行转换时，函数的构造会回退到构造函数的重载。编译器选择会优先选择初始化列表初始化，即使需要进行隐式转换。
+- 花括号的初始化会导致一下令人困惑的行为：因为新的c++标准中添加了std::initializer, 当初始化的时候新的标准里会优先解析成初始化列表，而不是对应的参数，当一个类的构造函数中包含初始化列表，你使用花括号的初始化时，会优先使用初始化列表的构造函数，即使构造参数中有类型完全符合的构造函数，初始化列表页会根据参数的类型先进行隐式转换，转换成初始化列表中的类型（即使初始化列表中的类型并不是一致的），如果类型定义了转换成某种类型的操作符，并且这种操作符可以和初始化列表中的类型进行隐式转换，这种方式的调用会调用初始化列表的构造而不是拷贝构造函数。如果构造的花括号中的类型完全没有办法和初始化列表中的类型进行转换时，函数的构造会回退到构造函数的重载。编译器选择会优先选择初始化列表初始化，即使需要进行隐式转换。
 
 - 调用空的初始化列表的构造函数需要这样调用，否则会认为是空参数的构造函数
 
@@ -41,6 +41,39 @@ std::vector<int> v1(10, 20); // use non-std::initializer_list // ctor: create 10
 std::vector<int> v2{10, 20}; // use std::initializer_list ctor: // create 2-element std::vector,
                                  // element values are 10 and 20
 ```
+
+## 二、使用 nullptr 而不是 0 和 NULL
+
+- 在代码中表示空指针类型，不使用 0 或者是 NULL 因为0的本质类型是 int, 而 NULL 的类型不太明确，但是NULL类型绝对不是指针类型。当一个类型定义了包含 int 类型和 void* 类型参数的函数，当你想你调用空指针类型的函数时，你使用0和 NULL 调用函数都会发生错误。
+
+- nullptr 实际上也不是一个指针类型，nullptr 的实际类型是 std::nullptr_t ,nullptr_t 可以隐式转换为所有的原生指针类型。指向不同类型的指针也可以进行重载函数，当函数包含多个指针类型的重载，使用 nullptr 作为参数进行调用，编译会报错，
+
+```cpp
+#include <iostream>
+using namespace std;
+class a{
+public:
+    void print(int* a){
+        cout << "intptr" << endl;
+    };
+    void print(float* b){
+        cout << "floatptr" << endl;
+    };
+};
+
+int main(){
+    a Classa;
+    int intnum = 10;
+    float floatnum = 10.0;
+    int * intptr = &intnum;
+    float * floatptr = &floatnum;
+    Classa.print(intptr);
+    Classa.print(floatptr);
+    //Classa.print(nullptr); // error "overloaded 'print(std::nullptr_t)' is ambiguous"
+    return 0;
+}
+```
+
 ## 三、使用 alias 声明而不是 typedefs
 
 - 在现代c++的语法中会经常用到 
